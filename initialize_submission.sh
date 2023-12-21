@@ -36,6 +36,10 @@ docker compose push
 
 echo "Formatting API gateway file"
 sed "s/USERNAME/$DH_USERNAME/g" ./api-gateway.yaml.tmpl > ./api-gateway.yaml
+
+echo "Formatting frontend file"
+sed "s/USERNAME/$DH_USERNAME/g" ./frontend.yaml.tmpl > ./frontend.yaml
+
 echo "Submission initialized"
 exit 0
 
