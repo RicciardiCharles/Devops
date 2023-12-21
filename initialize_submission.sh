@@ -34,6 +34,8 @@ docker compose build
 echo "Pushing images to Dockerhub account $DH_USERNAME"
 docker compose push
 
+echo "Formatting API gateway file"
+sed "s/USERNAME/$DH_USERNAME/g" ./api-gateway.yaml.tmpl > ./api-gateway.yaml
 echo "Submission initialized"
 exit 0
 
