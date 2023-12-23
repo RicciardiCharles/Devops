@@ -1,0 +1,50 @@
+# PersistentVolumeClaim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: feedback-db
+  namespace: default
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: feedback-api
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: feedback-api
+  template:
+    metadata:
+      labels:
+        app: feedback-api
+    spec:
+      containers:
+      - name: feedback-api
+        image: blspr/feedback-api:submission
+        ports:
+        - containerPort: 9000
+        env:
+        - name: DATABASE_DIR
+          value: "/usr/db"
+        volumeMounts:
+        - name: db-volume
+          mountPath: "/usr/db"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 9000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+      volumes:
+      - name: db-volume
+        persistentVolumeClaim:
+          claimName: feedback-db
